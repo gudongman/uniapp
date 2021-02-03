@@ -70,10 +70,16 @@
 		</view>
 		
 		<u-divider>表单</u-divider>
-		<u-form :form="form" ref="uform">
-			<u-form-item label="姓名"><u-input v-model="form.name" type="text"></u-input></u-form-item>
+		<u-form :model="form" ref="uform" :rules="rules" :errorType="['toast']">
+			<u-form-item label-width="120" label="姓名" prop="name"><u-input v-model="form.name" type="text"></u-input></u-form-item>
+			<u-form-item label-width="120" label="手机号" prop="phone"><u-input v-model="form.phone" type="number"></u-input></u-form-item>
 			<u-form-item label="简介"><u-input v-model="form.desc" type="textarea" height="110"></u-input></u-form-item>
-			<u-form-item label="性别"><u-input v-model="form.sex" type="select" /></u-form-item>
+			<u-form-item label="性别" prop="sex">
+				<u-input v-model="form.sex" type="select" @click="showSex=true" :select-open="showSex"/>
+				<u-action-sheet :list="actionSheetList" v-model="showSex" @click="changeGender"></u-action-sheet>
+			</u-form-item>
+			<u-form-item label="密码" ></u-form-item>
+			<u-form-item label="水果"><u-input v-model="form.sex" type="select" /></u-form-item>
 		</u-form>
 		
 		<u-divider>表格</u-divider>
@@ -111,6 +117,7 @@
 				
 				show: true,
 				inputShow: false,
+				showSex:false,
 				value:'实打实的撒耳温枪',
 				textareavalue: '',
 				password:'',
@@ -126,8 +133,50 @@
 						text: '保密'
 					}
 				],
-				form:{}
+				checkboxList: [
+					{
+						name: '苹果',
+						checked: false,
+						disabled: false
+					},
+					{
+						name: '雪梨',
+						checked: false,
+						disabled: false
+					},
+					{
+						name: '柠檬',
+						checked: false,
+						disabled: false
+					}
+				],
+				form:{
+					name:''
+				},
+				rules:{
+					name:[{
+						required: true,
+						message: '请输入姓名',
+						// trigger: ['blur','change'],
+						trigger: 'blur,change'
+					}],
+					phone:[{
+						required: true,
+						message: '请输入手机号',
+						trigger:'blur,change'
+					},{
+						validator: (rule, value,callback)=>{
+							return this.$u.test.mobile(value)
+						},
+						message: '手机号输入不正确',
+						trigger:'blur,change'
+					}]
+				}
 			}
+		},
+		onReady() {
+			// this.$refs.uform.setRules(this.rules)
+				this.$refs.uform.setRules(this.rules);
 		},
 		onLoad() {
 
@@ -142,6 +191,9 @@
 			change(index){
 				console.log(index);
 				this.sel = this.actionSheetList[index].text
+			},
+			changeGender(index){
+				this.form.sex = this.actionSheetList[index].text
 			}
 		}
 	}
