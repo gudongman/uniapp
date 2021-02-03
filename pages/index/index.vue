@@ -60,9 +60,45 @@
 		<u-divider>tag 标签 mode="light/dark/plain"</u-divider>
 		<u-tag type="success" text="测试" shape="circle" mode="light" bg-color="#f4f4f4" color="grey" border-color="grey" closeable @close="close()" :show="show"></u-tag>
 		
-		<!-- m -->
-		<!-- <u-badge type="error" count="7"></u-badge> -->
-
+		<u-divider>input输入框 placeholder-style字符串 custom-style对象</u-divider>
+		<u-input focus :selection-start="5" :selection-end="7" v-model="value" border type="text" clearable confirm-type="确定" :placeholder-style="'color:red;fontSize:14px;'" :custom-style="{fontSize: '18px'}"></u-input>
+		<u-input type="textarea" border v-model="textareavalue" :height="100" :auto-height="true" :maxlength="-1" ></u-input>
+		<u-input v-model="password" border type="password" :password-icon="true" placeholder="请输入密码"></u-input>
+		<view class="">
+			<u-input v-model="sel" border type="select" @click="inputShow=true" :select-open="inputShow"/>
+			<u-action-sheet :list="actionSheetList" v-model="inputShow" @click="change"></u-action-sheet>
+		</view>
+		
+		<u-divider>表单</u-divider>
+		<u-form :form="form" ref="uform">
+			<u-form-item label="姓名"><u-input v-model="form.name" type="text"></u-input></u-form-item>
+			<u-form-item label="简介"><u-input v-model="form.desc" type="textarea" height="110"></u-input></u-form-item>
+			<u-form-item label="性别"><u-input v-model="form.sex" type="select" /></u-form-item>
+		</u-form>
+		
+		<u-divider>表格</u-divider>
+		<u-table >
+			<u-tr>
+				<u-th>学校</u-th>
+				<u-th>班级</u-th>
+				<u-th>年龄</u-th>
+			</u-tr>
+			<u-tr>
+				<u-td width="auto">浙江大学</u-td>
+				<u-td width="16%">二年级</u-td>
+				<u-td width="17%">的说辞</u-td>
+				<u-td width="auto">22</u-td>
+			</u-tr>
+			<u-tr>
+				<u-td>清华大学</u-td>
+				<u-td >
+					<view class="">
+						<text>二年级</text> <text style="color:blue;padding-left: 5px;">的</text>
+					</view>
+				</u-td>
+				<u-td>20</u-td>
+			</u-tr>
+		</u-table>
 	</view>
 </template>
 
@@ -73,7 +109,24 @@
 				src: 'https://cdn.uviewui.com/uview/example/fade.jpg',
 				customStyle: {marginTop: '10upx', width: '100upx'},
 				
-				show: true
+				show: true,
+				inputShow: false,
+				value:'实打实的撒耳温枪',
+				textareavalue: '',
+				password:'',
+				sel:'',
+				actionSheetList: [
+					{
+						text: '男'
+					},
+					{
+						text: '女'
+					},
+					{
+						text: '保密'
+					}
+				],
+				form:{}
 			}
 		},
 		onLoad() {
@@ -86,7 +139,10 @@
 			close(){
 				this.show = false
 			},
-		
+			change(index){
+				console.log(index);
+				this.sel = this.actionSheetList[index].text
+			}
 		}
 	}
 </script>
