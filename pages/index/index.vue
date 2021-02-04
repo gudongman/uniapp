@@ -81,7 +81,6 @@
 			<u-form-item label="密码" ></u-form-item>
 			<u-form-item label="水果"><u-input v-model="form.sex" type="select" /></u-form-item>
 		</u-form>
-		
 		<u-divider>表格</u-divider>
 		<u-table >
 			<u-tr>
@@ -105,6 +104,46 @@
 				<u-td>20</u-td>
 			</u-tr>
 		</u-table>
+		
+		
+		<!-- 11111111111111111111111 2-4 晚上写的哦 -->
+		<!-- picker 选择器  -->
+		<!-- <u-divider> picker 选择器 </u-divider>
+		<u-picker v-model="pickerShow"></u-picker> -->
+		
+		<u-count-to :start-val="startVal" :end-val="endVal" use-easing :duration="3000" ref="count" :decimal="2"></u-count-to>
+		<u-button @click="add">+100</u-button>
+		
+		
+		<u-card :show-head="false" :show-foot="false">
+			<!-- :title="title" :sub-title="subTitle" :thumb="thumb" -->
+			<view class="" slot="body">
+				<view class="u-body-item u-flex u-border-bottom u-col-between u-p-t-0">
+					<view class="u-body-item-title u-line-2">瓶身描绘的牡丹一如你初妆，冉冉檀香透过窗心事我了然，宣纸上走笔至此搁一半</view>
+					<image src="https://img11.360buyimg.com/n7/jfs/t1/94448/29/2734/524808/5dd4cc16E990dfb6b/59c256f85a8c3757.jpg" mode="aspectFill"></image>
+				</view>
+				<view class="u-body-item u-flex u-row-between u-p-b-0">
+					<view class="u-body-item-title u-line-2">釉色渲染仕女图韵味被私藏，而你嫣然的一笑如含苞待放</view>
+					<image src="https://img12.360buyimg.com/n7/jfs/t1/102191/19/9072/330688/5e0af7cfE17698872/c91c00d713bf729a.jpg" mode="aspectFill"></image>
+				</view>
+			</view>
+			<view class="" slot="foot"><u-icon name="chat-fill" size="34" color="" label="30评论"></u-icon></view>
+		</u-card>
+		
+		<u-divider> mask 遮罩层 </u-divider>
+		<u-divider> @tap.stop防止点击弹窗关闭遮罩层 </u-divider>
+		<u-divider> zoom true 弹出框变大 </u-divider>
+		<u-mask :show="maskshow" @click="maskshow = false" :zoom="true">
+			<view class="warp">
+				<view class="rect" @tap.stop="clickMask">点击</view>
+			</view>
+		</u-mask>
+		<u-button @click="maskshow = true">mask弹出</u-button>
+		<u-divider> 轮播 </u-divider>
+		<u-divider>mode round/dot/number/rect/none </u-divider>
+		<u-swiper :list="swiperlist" mode="round" title :effect3d="effect3d"></u-swiper>
+		
+		<u-button  @click="effect3d=!effect3d" style="margin-top: 2px;">开启/关闭3d效果</u-button>
 	</view>
 </template>
 
@@ -112,6 +151,7 @@
 	export default {
 		data() {
 			return {
+				
 				src: 'https://cdn.uviewui.com/uview/example/fade.jpg',
 				customStyle: {marginTop: '10upx', width: '100upx'},
 				
@@ -171,7 +211,25 @@
 						message: '手机号输入不正确',
 						trigger:'blur,change'
 					}]
-				}
+				},
+				// 2-4 晚上写的哦 
+				maskshow: false,
+				endVal: 300.33,startVal:20,
+				thumb: 'http://pic2.sc.chinaz.com/Files/pic/pic9/202002/hpic2119_s.jpg',
+				swiperlist: [{
+						image: 'https://cdn.uviewui.com/uview/swiper/1.jpg',
+						title: '昨夜星辰昨夜风，画楼西畔桂堂东'
+					},
+					{
+						image: 'https://cdn.uviewui.com/uview/swiper/2.jpg',
+						title: '身无彩凤双飞翼，心有灵犀一点通'
+					},
+					{
+						image: 'https://cdn.uviewui.com/uview/swiper/3.jpg',
+						title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳'
+					}
+				],
+				effect3d: false
 			}
 		},
 		onReady() {
@@ -182,6 +240,16 @@
 
 		},
 		methods: {
+			// 2-4 晚上写的哦 
+			clickMask(){
+				console.log(11111);
+			},
+			add(){
+				this.startVal = Number(this.$refs.count.displayValue);
+				console.log(this.startVal);
+				this.endVal+=100;
+			},
+			// 
 			alert(index){
 				console.log(index);
 			},
@@ -200,6 +268,37 @@
 </script>
 
 <style lang="scss" scoped>
+// 2-4 晚上写的哦 
+	.u-card-wrap { 
+			background-color: $u-bg-color;
+			padding: 1px;
+		}
+		
+		.u-body-item {
+			font-size: 32rpx;
+			color: #333;
+			padding: 20rpx 10rpx;
+		}
+			
+		.u-body-item image {
+			width: 120rpx;
+			flex: 0 0 120rpx;
+			height: 120rpx;
+			border-radius: 8rpx;
+			margin-left: 12rpx;
+		}
+	.warp {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+	}
+	.rect {
+		width: 120px;
+		height: 120px;
+		background-color: #fff;
+	}
+	//
 	.view2{
 		width: 100upx;
 		height: 100upx;
