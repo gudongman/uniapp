@@ -69,18 +69,48 @@
 			<u-action-sheet :list="actionSheetList" v-model="inputShow" @click="change"></u-action-sheet>
 		</view>
 		
-		<u-divider>表单</u-divider>
-		<u-form :model="form" ref="uform" :rules="rules" :errorType="['toast']">
-			<u-form-item label-width="120" label="姓名" prop="name"><u-input v-model="form.name" type="text"></u-input></u-form-item>
+		<u-divider>表单 error-type为['toast'] 仅在有提交按钮的时候会展示</u-divider>
+		<u-form :model="form" ref="uform" :rules="rules" :error-type="['message']">
+			<!-- :error-type="['message','border-bottom']" -->
+			<u-form-item left-icon="account" label-width="120" label="姓名" prop="name"><u-input v-model="form.name" type="text"></u-input></u-form-item>
 			<u-form-item label-width="120" label="手机号" prop="phone"><u-input v-model="form.phone" type="number"></u-input></u-form-item>
-			<u-form-item label="简介"><u-input v-model="form.desc" type="textarea" height="110"></u-input></u-form-item>
+			<u-form-item label="简介" prop="desc"><u-input v-model="form.desc" type="textarea" height="110"></u-input></u-form-item>
 			<u-form-item label="性别" prop="sex">
 				<u-input v-model="form.sex" type="select" @click="showSex=true" :select-open="showSex"/>
 				<u-action-sheet :list="actionSheetList" v-model="showSex" @click="changeGender"></u-action-sheet>
 			</u-form-item>
-			<u-form-item label="密码" ></u-form-item>
-			<u-form-item label="水果"><u-input v-model="form.sex" type="select" /></u-form-item>
+			<u-form-item  label-width="160" label="密码" prop="pwd"><u-input type="password" v-model="form.pwd" password-icon></u-input></u-form-item>
+			<u-form-item  label-width="160" label="确认密码" prop="repwd"><u-input type="password" v-model="form.repwd" password-icon></u-input></u-form-item>
+			<u-form-item label="水果" prop="fruit"><u-checkbox-group @change="fruitChange" max="2"><u-checkbox shape="circle" v-model="item.checked" v-for="(item,index) in checkboxList" :key="index" :name="item.name">{{item.name}}</u-checkbox></u-checkbox-group></u-form-item>
+			<u-form-item label="单选" prop="fruitRadio"><u-radio-group @change="radioChange" v-model="radioValue"><u-radio shape="circle" :name="item.name" v-for="(item,index) in radioList" :key="index" >{{item.name}}</u-radio></u-radio-group></u-form-item>
+			<u-form-item label="开关" prop="switch"><u-switch slot="right" v-model="form.switch"></u-switch></u-form-item>
+			<u-button @click="submit">提交</u-button>
 		</u-form>
+		<u-divider>日历</u-divider>
+		<u-calendar v-model="calendarShow" mode="date" @change="changeCalendar"></u-calendar>
+		<u-input type="select" :select-open="calendarShow" v-model="date" @click="calendarShow= true"></u-input>
+		<u-divider>日历区域选择</u-divider>
+		<u-calendar v-model="calendarRangeShow" mode="range" @change="changeCalendarRange" start-text="到店" end-text="离店">
+			<view slot="tooltip">
+				<view style="text-align: center;line-height: 50px;font-size: 16px;">
+					选择住店日期
+				</view>
+			</view>
+		</u-calendar>
+		<u-input type="select" :select-open="calendarRangeShow" v-model="dateRange" @click="calendarRangeShow= true"></u-input>
+		
+		<u-divider>Select 列选择器</u-divider>
+		<!-- <u-select v-model="selShow" :list="list" @confirm="confirm"></u-select>
+		<u-button @click="selShow=true">{{choosen||'请选择'}}</u-button> -->
+		
+		<u-select v-model="selShow" :list="mulList" @confirm="confirm" mode="mutil-column"></u-select>
+		<u-button @click="selShow=true">{{choosen||'请选择'}}</u-button> 
+		
+		<!-- <u-keyboard ref="uKeyboard" mode="car" v-model="show"></u-keyboard>
+		<u-button @click="show = true">打开</u-button> -->
+		
+		<u-divider>picker 选择器</u-divider>
+		
 		<u-divider>表格</u-divider>
 		<u-table >
 			<u-tr>
@@ -154,7 +184,8 @@
 				
 				src: 'https://cdn.uviewui.com/uview/example/fade.jpg',
 				customStyle: {marginTop: '10upx', width: '100upx'},
-				
+				calendarShow: false,
+				calendarRangeShow: false,
 				show: true,
 				inputShow: false,
 				showSex:false,
@@ -190,6 +221,14 @@
 						disabled: false
 					}
 				],
+				radioList:[{
+					name: '苹果',
+					disabled: false
+				},{
+					name: '香蕉',
+					disabled: false
+				}],
+				radioValue: '苹果',
 				form:{
 					name:''
 				},
@@ -210,6 +249,22 @@
 						},
 						message: '手机号输入不正确',
 						trigger:'blur,change'
+					}],
+					pwd:[{
+						required: true,
+						message: '请输入密码',
+						trigger:'blur,change'
+					}],
+					repwd:[{
+						required: true,
+						message: '请确认密码',
+						trigger:'blur,change'
+					},{
+						validator: (rules, valid,callback)=>{
+							return this.form.pwd==this.form.repwd
+						},
+						message: '两次密码输入不一致',
+						trigger:'blur'
 					}]
 				},
 				// 2-4 晚上写的哦 
@@ -229,7 +284,40 @@
 						title: '谁念西风独自凉，萧萧黄叶闭疏窗，沉思往事立残阳'
 					}
 				],
-				effect3d: false
+				effect3d: false,
+				date:'选择日期',
+				dateRange:'选择日期区间',
+				selShow: false,
+				list: [
+					{
+						value: '1',
+						label: '江'
+					},
+					{
+						value: '2',
+						label: '湖'
+					}
+				],
+				mulList: [[
+					{
+						value: '1',
+						label: '江'
+					},
+					{
+						value: '2',
+						label: '湖'
+					}
+				],[
+					{
+						value: '3',
+						label: '江2'
+					},
+					{
+						value: '4',
+						label: '湖2'
+					}
+				]],
+				choosen: ''
 			}
 		},
 		onReady() {
@@ -240,6 +328,12 @@
 
 		},
 		methods: {
+			fruitChange(e){
+				this.form.fruit = e;
+			},
+			radioChange(e){
+				this.form.fruitRadio = e;
+			},
 			// 2-4 晚上写的哦 
 			clickMask(){
 				console.log(11111);
@@ -250,6 +344,19 @@
 				this.endVal+=100;
 			},
 			// 
+			confirm(e){
+				console.log(e)
+				// this.choosen=e[0];
+				 this.choosen=e[0].label+'-'+e[1].label ;
+			},
+			changeCalendarRange(e){
+				console.log(e);
+				this.dateRange = e.startDate +'至' +e.endDate
+			},
+			changeCalendar(e){
+				console.log(e);
+				this.date = e.result
+			},
 			alert(index){
 				console.log(index);
 			},
@@ -262,6 +369,17 @@
 			},
 			changeGender(index){
 				this.form.sex = this.actionSheetList[index].text
+			},
+			submit(){
+				this.$refs.uform.validate(valid=>{
+					console.log(valid);
+					console.log(this.form);
+					if(valid){
+						this.$u.toast('验证通过')
+					}else{
+						this.$u.toast('验证失败')
+					}
+				})
 			}
 		}
 	}
