@@ -1,5 +1,7 @@
 <template>
 	<view class="wrap">
+		<u-button shape="circle" type="primary" ripple></u-button>
+		
 		<u-divider border-color="#84cdf4" half-width="50">u-line-2</u-divider>
 		<view class="u-line-2">
 			是日也，天朗气清，惠风和畅，仰观宇宙之大，俯察品类之盛，所以游目骋怀，足以极视听之娱，信可乐也
@@ -144,14 +146,42 @@
 		<u-swiper :list="swiperlist" mode="round" title :effect3d="effect3d"></u-swiper>
 		
 		<u-button  @click="effect3d=!effect3d" style="margin-top: 2px;">开启/关闭3d效果</u-button>
+		
+		<u-link href="http://www.uviewui.com">蜀道难，难于上青天</u-link>
+		
+		
+		<!-- <u-tabs-swiper ref="tabs" :list="list" bar-height="6" bar-width="40" active-color="#2979ff"></u-tabs-swiper> -->
+		<u-tabs-swiper ref="tabs"  :list="namelist"  bar-height="6" bar-width="40" active-color="#2979ff"></u-tabs-swiper>
+		<!-- <u-tabs-swiper ref="tabs" :list="list" name="cate_name" count="cate_count" active-color="#2979ff" inactive-color="#606266" font-size="30" current="0"></u-tabs-swiper> -->
+		<newCom></newCom>
+		
+		<u-button shape="circle" type="primary" ripple @click="go()">新的页面</u-button>
 	</view>
 </template>
 
 <script>
+	import newCom from './components/new-component.vue'
 	export default {
+		components: {newCom},
 		data() {
 			return {
 				
+				list: [{
+					cate_name: '待收货'
+				}, {
+					cate_name: '待付款'
+				}, {
+					cate_name: '待评价',
+					cate_count: 5
+				}],
+				namelist: [{
+					name: '待收货'
+				}, {
+					name: '待付款'
+				}, {
+					name: '待评价',
+					count: 5
+				}],
 				src: 'https://cdn.uviewui.com/uview/example/fade.jpg',
 				customStyle: {marginTop: '10upx', width: '100upx'},
 				
@@ -240,6 +270,11 @@
 
 		},
 		methods: {
+			go(){
+				uni.navigateTo({
+					url: '/pages/index/index2'
+				})
+			},
 			// 2-4 晚上写的哦 
 			clickMask(){
 				console.log(11111);
